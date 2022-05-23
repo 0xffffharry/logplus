@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var version = "v0.0.1"
+var version = "v0.0.2"
 
 type LogPlus struct {
 	Log     *log.Logger
@@ -117,7 +117,7 @@ func timeNow() string {
 	return time.Now().Format("2006-01-02 15:04:05 MST")
 }
 
-func (l *LogPlus) do(loglevel LogLevel, v ...interface{}) string {
+func (l *LogPlus) do(loglevel LogLevel, format string, v ...interface{}) string {
 	op := fmt.Sprintf("[%s] [%s] ", timeNow(), loglevel.transLevel())
 	switch l.Option.Lfile {
 	case 0:
@@ -133,30 +133,30 @@ func (l *LogPlus) do(loglevel LogLevel, v ...interface{}) string {
 		}
 	default:
 	}
-	op += fmt.Sprintf("%s", v...)
+	op += fmt.Sprintf(format, v...)
 	return op
 }
 
-func (l *LogPlus) Printf(loglevel LogLevel, v ...interface{}) {
-	l.Log.Print(l.do(loglevel, v...))
+func (l *LogPlus) Printf(loglevel LogLevel, format string, v ...interface{}) {
+	l.Log.Print(l.do(loglevel, format, v...))
 }
 
 func (l *LogPlus) Println(loglevel LogLevel, v ...interface{}) {
-	l.Log.Println(l.do(loglevel, v...))
+	l.Printf(loglevel, "%s\n", v...)
 }
 
-func (l *LogPlus) Fatalf(loglevel LogLevel, v ...interface{}) {
-	l.Log.Fatalf(l.do(loglevel, v...))
+func (l *LogPlus) Fatalf(loglevel LogLevel, format string, v ...interface{}) {
+	l.Log.Fatalf(l.do(loglevel, format, v...))
 }
 
 func (l *LogPlus) Fatalln(loglevel LogLevel, v ...interface{}) {
-	l.Log.Fatalln(l.do(loglevel, v...))
+	l.Fatalf(loglevel, "%s\n", v...)
 }
 
-func (l *LogPlus) Panicf(loglevel LogLevel, v ...interface{}) {
-	l.Log.Panicf(l.do(loglevel, v...))
+func (l *LogPlus) Panicf(loglevel LogLevel, format string, v ...interface{}) {
+	l.Log.Panicf(l.do(loglevel, format, v...))
 }
 
 func (l *LogPlus) Panicln(loglevel LogLevel, v ...interface{}) {
-	l.Log.Panicln(l.do(loglevel, v...))
+	l.Panicf(loglevel, "%s\n", v...)
 }
